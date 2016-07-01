@@ -31,6 +31,9 @@ install_r_packages() (
         Rscript -e "install.packages('Cairo')"
     fi
     
+    # This needs to be set at compile time (WTF?)
+    RPYTHON_PYTHON_VERSION=3.5 Rscript -e "install.packages('rPython', type = 'source')"
+    
     # Also test newer versions so that we catch errors earlier
     if [[ "$DEPS" == github ]]; then
         Rscript -e 'devtools::install_github(c("snoweye/pbdZMQ", "irkernel/repr", "irkernel/IRdisplay"))'
@@ -45,6 +48,10 @@ create_conda_environment() (
     wget "https://repo.continuum.io/miniconda/Miniconda3-latest-$os-x86_64.sh" -O miniconda.sh
     bash miniconda.sh -b -p "$HOME/miniconda"
     rm miniconda.sh # needed to prevent a error in the R CMD check part
+    
+    #don’t use ancient lib
+    conda remove -y --force readline
+    pip install readline
     
     hash -r
     conda config --set always_yes yes --set changeps1 no
@@ -70,7 +77,6 @@ build_package() {
 check_package() (
     set -ex
     
-    Rscript -e 'devtools::test(reporter = "check")'
     R CMD check "$PKG_TARBALL" --as-cran
     ! grep -q 'WARNING' "$CHECK_LOG"
     # .. because ': ' was resulting in an replacement by travis and an error

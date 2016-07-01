@@ -45,9 +45,10 @@ r_packages:
 
 before_script:
   - source .travis.sh
-  - install_r_packages
   - export PATH="$HOME/miniconda/bin:$PATH"
+  - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/miniconda/lib"
   - create_conda_environment
+  - install_r_packages
   - source activate test-environment
   - pip install jupyter_kernel_test
 

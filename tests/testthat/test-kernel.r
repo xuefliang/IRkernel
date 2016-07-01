@@ -1,7 +1,6 @@
 context('kernel')
 
 Sys.setenv(
-    RPYTHON_PYTHON_VERSION = 3L,
     PYTHONWARNINGS = 'ignore::DeprecationWarning',
     PYTHONPATH = paste(getwd(), Sys.getenv('PYTHONPATH'), sep = ':'))
 
